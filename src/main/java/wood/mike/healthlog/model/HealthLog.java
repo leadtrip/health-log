@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import wood.mike.healthlog.util.EntryType;
+import wood.mike.healthlog.util.Feeling;
 
 import java.time.LocalDateTime;
 
@@ -30,13 +32,6 @@ public class HealthLog {
 
     private LocalDateTime timestamp = LocalDateTime.now();
 
-    public enum Feeling {
-        GREAT, GOOD, OKAY, BAD, REALLY_BAD
-    }
-
-    public enum EntryType {
-        EXERCISE, FOOD, SLEEP, GENERAL
-    }
 }
 
 

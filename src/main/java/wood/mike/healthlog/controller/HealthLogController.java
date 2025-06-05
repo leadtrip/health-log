@@ -2,12 +2,12 @@ package wood.mike.healthlog.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import wood.mike.healthlog.model.HealthLog;
 import wood.mike.healthlog.repository.HealthLogRepository;
-import org.springframework.web.bind.annotation.GetMapping;
+import wood.mike.healthlog.util.EntryType;
+import wood.mike.healthlog.util.Feeling;
+import wood.mike.healthlog.util.FeelingLabelProvider;
 
 import java.time.LocalDateTime;
 
@@ -25,8 +25,8 @@ public class HealthLogController {
     public String list(Model model) {
         model.addAttribute("logs", repository.findAllByOrderByTimestampDesc());
         model.addAttribute("newLog", new HealthLog());
-        model.addAttribute("feelings", HealthLog.Feeling.values());
-        model.addAttribute("types", HealthLog.EntryType.values());
+        model.addAttribute("feelings", FeelingLabelProvider.getFeelingLabels());
+        model.addAttribute("types", EntryType.values());
         return "logs";
     }
 
@@ -38,4 +38,28 @@ public class HealthLogController {
         repository.save(log);
         return "redirect:/logs";
     }
+
+    @GetMapping("/edit/{id}")
+    public String editLog(@PathVariable Long id, Model model) {
+        HealthLog log = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid log ID: " + id));
+        model.addAttribute("newLog", log);
+        model.addAttribute("logs", repository.findAll());
+        model.addAttribute("feelings", FeelingLabelProvider.getFeelingLabels());
+        model.addAttribute("types", EntryType.values());
+        return "logs";
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteLog(@PathVariable Long id) {
+        repository.deleteById(id);
+        return "redirect:/logs";
+    }
+
+    @PostMapping("/logs")
+    public String saveLog(@ModelAttribute HealthLog log) {
+        repository.save(log);
+        return "redirect:/logs";
+    }
+
 }
