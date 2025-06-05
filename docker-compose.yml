@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: healthlog-postgres
+    environment:
+      POSTGRES_DB: healthlog
+      POSTGRES_USER: healthlog
+      POSTGRES_PASSWORD: healthlog
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U healthlog"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

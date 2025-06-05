@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Health Logs</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        form, table { margin-bottom: 2rem; }
+        td, th { padding: 0.5rem; }
+        .emoji { font-size: 1.5rem; }
+    </style>
+</head>
+<body>
+
+<h1>Health Log</h1>
+
+<form th:action="@{/logs}" th:object="${newLog}" method="post" class="container my-4">
+    <div class="row g-3 align-items-end">
+
+        <div class="col-md-3">
+            <label for="feeling" class="form-label">Feeling</label>
+            <select id="feeling" class="form-select" th:field="*{feeling}">
+                <option th:each="f : ${feelings}" th:value="${f}" th:text="${f}"></option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="type" class="form-label">Type</label>
+            <select id="type" class="form-select" th:field="*{type}">
+                <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="note" class="form-label">Note</label>
+            <input id="note" type="text" class="form-control" th:field="*{note}" placeholder="Write something..." />
+        </div>
+
+        <div class="col-md-4">
+            <label for="timestamp" class="form-label">Date / Time</label>
+            <input id="timestamp" type="datetime-local" class="form-control" th:field="*{timestamp}" />
+        </div>
+
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-save2 me-2"></i> Save
+            </button>
+        </div>
+
+    </div>
+</form>
+
+
+<div class="container my-4">
+    <h2 class="mb-4">Daily Health Logs</h2>
+
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+        <tr>
+            <th>Date & Time</th>
+            <th>Feeling</th>
+            <th>Type</th>
+            <th>Note</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="log : ${logs}">
+            <td th:text="${#temporals.format(log.timestamp, 'dd-MM-yyy HH:mm')}"></td>
+
+            <td>
+          <span th:switch="${log.feeling != null ? log.feeling.name() : ''}">
+            <span th:case="'GREAT'" class="badge bg-success fs-4">😄</span>
+            <span th:case="'GOOD'" class="badge bg-info text-dark fs-4">🙂</span>
+            <span th:case="'OKAY'" class="badge bg-secondary fs-4">😐</span>
+            <span th:case="'BAD'" class="badge bg-warning text-dark fs-4">🙁</span>
+            <span th:case="'REALLY_BAD'" class="badge bg-danger fs-4">😩</span>
+            <span th:case="*" class="text-muted">-</span>
+          </span>
+            </td>
+
+            <td>
+          <span th:text="${log.type != null ? log.type.name() : '-'}"
+                class="text-capitalize"></span>
+            </td>
+
+            <td th:text="${log.note}" style="white-space: pre-wrap;"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>
