@@ -13,7 +13,6 @@
 <div class="container my-5">
     <h1 class="mb-4 text-center">🩺 Health Log</h1>
 
-    <!-- Log Entry Form -->
     <form th:action="@{/logs}" th:object="${newLog}" method="post" class="bg-white p-4 rounded shadow-sm mb-5">
         <input type="hidden" th:field="*{id}" />
         <div class="row g-3 align-items-end">
@@ -42,7 +41,11 @@
 
             <div class="col-md-4">
                 <label for="timestamp" class="form-label">Date / Time</label>
-                <input id="timestamp" type="datetime-local" class="form-control" th:field="*{timestamp}" />
+                <input id="timestamp"
+                       name="timestamp"
+                       type="datetime-local"
+                       class="form-control"
+                       th:value="${#temporals.format(newLog.timestamp, 'yyyy-MM-dd''T''HH:mm')}"/>
             </div>
 
             <div class="col-md-2 d-grid">
@@ -73,7 +76,7 @@
                 </td>
                 <td th:text="${log.type.label}">-</td>
                 <td th:text="${log.note}">-</td>
-                <td th:text="${#temporals.format(log.timestamp, 'yyyy-MM-dd HH:mm')}">-</td>
+                <td th:text="${#temporals.format(log.timestamp, 'MEDIUM')}">-</td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group">
                         <a th:href="@{'/logs/edit/' + ${log.id}}" class="btn btn-outline-primary">
